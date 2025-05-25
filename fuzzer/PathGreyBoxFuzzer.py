@@ -1,9 +1,12 @@
 import time
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Set
+from utils.Seed import Seed
+from runner.Runner import Runner
 
 from fuzzer.GreyBoxFuzzer import GreyBoxFuzzer
 from schedule.PathPowerSchedule import PathPowerSchedule
 from runner.FunctionCoverageRunner import FunctionCoverageRunner
+from utils.Coverage import Location
 
 
 class PathGreyBoxFuzzer(GreyBoxFuzzer):
@@ -13,6 +16,10 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
         super().__init__(seeds, schedule, False)
 
         # TODO
+        self.last_new_path_time = self.start_time
+        self.total_paths = 0
+        self.path_coverage: Set[frozenset[Location]] = set()
+        self._is_print = is_print
 
         print("""
 ┌───────────────────────┬───────────────────────┬───────────────────────┬───────────────────┬───────────────────┬────────────────┬───────────────────┐
@@ -42,5 +49,17 @@ class PathGreyBoxFuzzer(GreyBoxFuzzer):
         result, outcome = super().run(runner)
 
         # TODO
-
+        current_path = frozenset(runner.coverage())
+        
+        # Check for new path coverage
+        if current_path not in self.path_coverage:
+            self.path_coverage.add(current_path)
+            self.total_paths += 1
+            self.last_new_path_time = time.time()
+            
+            # Only add to population if it's a passing input
+            if outcome == Runner.PASS:
+                seed = Seed(self.inp, runner.coverage())
+                self.population.append(seed)
+    
         return result, outcome
