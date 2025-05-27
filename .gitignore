@@ -1,1 +1,7 @@
 .idea
+fuzzer/__pycache__
+runner/__pycache__
+schedule/__pycache__
+utils/__pycache__
+samples/__pycache__
+seedDB
