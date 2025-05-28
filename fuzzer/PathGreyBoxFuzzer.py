@@ -12,10 +12,11 @@ from utils.Coverage import Location
 class PathGreyBoxFuzzer(GreyBoxFuzzer):
     """Count how often individual paths are exercised."""
 
-    def __init__(self, seeds: List[str], schedule: PathPowerSchedule, is_print: bool):
-        super().__init__(seeds, schedule, False)
+    def __init__(self, seeds: List[str], schedule: PathPowerSchedule, is_print: bool, seed_directory: str = './seeds'):
+        super().__init__(seeds, schedule, is_print, seed_directory=seed_directory)
 
         # TODO
+        self.start_time = time.time()
         self.last_new_path_time = self.start_time
         self.total_paths = 0
         self.path_coverage: Set[frozenset[Location]] = set()

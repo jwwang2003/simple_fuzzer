@@ -16,7 +16,7 @@ from utils.Seed import Seed
 
 class GreyBoxFuzzer(Fuzzer):
 
-    def __init__(self, seeds: List[str], schedule: PowerSchedule, is_print: bool) -> None:
+    def __init__(self, seeds: List[str], schedule: PowerSchedule, is_print: bool, seed_directory: str = './seeds') -> None:
         """Constructor.
         `seeds` - a list of (input) strings to mutate.
         `mutator` - the mutator to apply.
@@ -32,6 +32,7 @@ class GreyBoxFuzzer(Fuzzer):
         self.seeds = seeds
         self.mutator = Mutator()
         self.schedule = schedule
+        self.seed_directory = seed_directory
         if is_print:
             print("""
 ┌───────────────────────┬───────────────────────┬───────────────────┬────────────────┬───────────────────┐
@@ -44,7 +45,7 @@ class GreyBoxFuzzer(Fuzzer):
         seed = self.schedule.choose(self.population)
 
         # Stacking: Apply multiple mutations to generate the candidate
-        candidate = seed.data
+        candidate = seed.load_data()
         trials = min(len(candidate), 1 << random.randint(1, 5))
         for i in range(trials):
             candidate = self.mutator.mutate(candidate)
@@ -89,7 +90,7 @@ class GreyBoxFuzzer(Fuzzer):
             self.covered_line |= runner.all_coverage
             if outcome == Runner.PASS:
                 # We have new coverage
-                seed = Seed(self.inp, runner.coverage())
+                seed = Seed(self.inp, runner.coverage(), directory=self.seed_directory)
                 self.population.append(seed)
         if outcome == Runner.FAIL:
             self.last_crash_time = time.time()
