@@ -55,7 +55,7 @@ class GreyBoxFuzzer(Fuzzer):
         """Returns first each seed once and then generates new inputs"""
         if self.seed_index < len(self.seeds):
             # Still seeding
-            self.inp = self.seeds[self.seed_index]
+            self.inp = self.seeds[self.seed_index].load_data()
             self.seed_index += 1
         else:
             # Mutating

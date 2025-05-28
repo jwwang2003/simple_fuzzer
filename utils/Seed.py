@@ -55,7 +55,7 @@ class Seed:
 
     def save(self):
         if self._data_cache is not None:
-            with open(self.data_path, 'w') as f:
+            with open(self.data_path, 'w', encoding='utf-8') as f:
                 f.write(self._data_cache)
 
         if self._coverage_cache is not None:
@@ -65,7 +65,7 @@ class Seed:
         if self._data_cache is None:
             if not os.path.exists(self.data_path):
                 raise FileNotFoundError(f"Seed data not found: {self.data_path}")
-            with open(self.data_path, 'r') as f:
+            with open(self.data_path, 'r', encoding='utf-8') as f:
                 self._data_cache = f.read()
         return self._data_cache
 

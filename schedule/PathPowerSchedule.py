@@ -19,12 +19,12 @@ class PathPowerSchedule(PowerSchedule):
         """Assign exponential energy inversely proportional to path frequency"""
         # TODO
         for seed in population:
-            path_key = frozenset(seed.coverage)
+            path_key = frozenset(seed.load_coverage())
             self.path_frequency[path_key] += 1
 
         # 根据路径频率分配能量（频率越低能量越高）
         for seed in population:
-            path_key = frozenset(seed.coverage)
+            path_key = frozenset(seed.load_coverage())
             frequency = self.path_frequency[path_key]
             # 使用反比例函数分配能量，加入指数控制偏向程度
             seed.energy = 1.0 / (frequency ** self.exponent)
